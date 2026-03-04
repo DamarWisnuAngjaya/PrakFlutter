@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Damar Wisnu Angjaya'),
+      home: const MyHomePage(title: 'Damar Wisnu Angjaya - 3124521050'),
     );
   }
 }
