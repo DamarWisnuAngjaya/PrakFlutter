@@ -10,75 +10,129 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Laprak Damar',
+      title: 'Kalkulator Konversi Suhu',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Damar Wisnu Angjaya - 3124521050'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
+  final TextEditingController suhuController = TextEditingController();
+
+  String satuan = "Celsius";
+
+  double c = 0;
+  double f = 0;
+  double k = 0;
+  double r = 0;
+
+  void konversi() {
+
+    double input = double.tryParse(suhuController.text) ?? 0;
+
     setState(() {
-      _counter++;
+
+      if (satuan == "Celsius") {
+        c = input;
+        f = (9/5 * c) + 32;
+        k = c + 273.15;
+        r = 4/5 * c;
+      }
+
+      else if (satuan == "Fahrenheit") {
+        f = input;
+        c = (f - 32) * 5/9;
+        k = c + 273.15;
+        r = 4/5 * c;
+      }
+
+      else if (satuan == "Kelvin") {
+        k = input;
+        c = k - 273.15;
+        f = (9/5 * c) + 32;
+        r = 4/5 * c;
+      }
+
+      else if (satuan == "Reaumur") {
+        r = input;
+        c = 5/4 * r;
+        f = (9/5 * c) + 32;
+        k = c + 273.15;
+      }
+
     });
-  }
-  void _decrementCounter() {
-    setState(() {
-      _counter--;
-    });
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text("Kalkulator Konversi Suhu"),
       ),
-      body: Center(
+
+      body: Padding(
+        padding: const EdgeInsets.all(20),
         child: Column(
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Cihuy'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+
+            TextField(
+              controller: suhuController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: "Masukkan Suhu",
+                border: OutlineInputBorder(),
+              ),
             ),
+
+            const SizedBox(height: 20),
+
+            DropdownButton<String>(
+              value: satuan,
+              items: const [
+                DropdownMenuItem(value: "Celsius", child: Text("Celsius")),
+                DropdownMenuItem(value: "Fahrenheit", child: Text("Fahrenheit")),
+                DropdownMenuItem(value: "Kelvin", child: Text("Kelvin")),
+                DropdownMenuItem(value: "Reaumur", child: Text("Reaumur")),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  satuan = value!;
+                });
+              },
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: konversi,
+              child: const Text("Konversi"),
+            ),
+
+            const SizedBox(height: 30),
+
+            Text("Celsius : ${c.toStringAsFixed(2)} °C"),
+            Text("Fahrenheit : ${f.toStringAsFixed(2)} °F"),
+            Text("Kelvin : ${k.toStringAsFixed(2)} K"),
+            Text("Reaumur : ${r.toStringAsFixed(2)} °R"),
+
           ],
         ),
       ),
-      floatingActionButton: Row(
-    mainAxisAlignment: MainAxisAlignment.end,
-    children: [
-      FloatingActionButton(
-        onPressed: _incrementCounter,
-        heroTag: "plus",
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-        ),
-      const SizedBox(width: 10),
-      FloatingActionButton(
-        onPressed: _decrementCounter,
-        heroTag: "mines",
-        tooltip: 'decrement',
-        child: const Icon(Icons.remove),
-        ),
-      ]
-      )
     );
   }
 }
